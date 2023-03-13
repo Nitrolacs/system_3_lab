@@ -6,17 +6,17 @@
 #define SF_VM_EXCHANGE_STRUCTURE_H
 
 // Определение структуры данных
-struct product {
-    char *company; // предприятие-изготовитель
+typedef struct Enterprise {
+    char* company; // предприятие-изготовитель
     char *type; // тип
-    double price; // цена
-    double performance; // производительность
-};
+    float price; // цена
+    float performance; // производительность
+} Enterprise;
 
 // Определение списка, содержащего элементы структуры данных
-struct node {
-    struct product data; // данные
-    struct node *next; // указатель на следующий элемент
-};
+typedef struct Node {
+    Enterprise data; // данные
+    struct Node *next; // указатель на следующий элемент
+} Node;
 
 #endif //SF_VM_EXCHANGE_STRUCTURE_H

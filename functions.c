@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "structure.h"
 
@@ -64,8 +65,99 @@ int CheckingInput(const char message[], int lowerBound, int count)
     return userInput;
 }
 
-struct node *create_node(struct product data) {
-    struct node *new_node = malloc(sizeof(struct node)); // выделение памяти
+char* StringInput(void)
+{
+    char* userStr = (char*)malloc(1 * sizeof(char));
+    userStr[0] = '\0';
+    char curChar = 0;
+    int curSize = 1;
+
+    while(curChar != '\n')
+    {
+        curChar = getchar();
+
+        int deltaVal = 0; // Определяет, на сколько изменится длина массива
+        int lengthDif = 0;
+
+        // Если мы стираем символы, а не пишем их,
+        if (curChar == BACKSPACE_KEY)
+        {
+            deltaVal = -1; // то будем уменьшать длину массива
+            lengthDif = 1; // и копировать строку до предпоследнего символа
+        }
+
+            // Иначе проверяем, входит ли введённый символ в диапазон печатных
+        else
+        {
+            if (curChar >= START_CHAR_RANGE && curChar <= END_CHAR_RANGE)
+            {
+                deltaVal = 1; // Если да, то будем увеличивать длину на 1
+                lengthDif = 2; // Не заполняем последние 2 символа -
+                // оставляем место для введённого символа и \0
+            }
+            else
+            {
+                continue; // Если это не печатный символ, то пропускаем его
+            }
+        }
+
+        // Если стирать больше нечего, но пользователь
+        // всё равно жмёт Backspace.
+        int newSize = curSize + deltaVal;
+        if (newSize == 0)
+        {
+            continue; // то мы переходим на следующую итерацию - ждём '\n'
+        }
+
+        char* tmpStr = (char*)malloc(newSize * sizeof(char));
+        if (tmpStr) // Проверяем, выделилась ли память
+        {
+            // Идём до предпоследнего символа, т.к. надо в конец записать '\0'
+            for (int i = 0;
+                 i < newSize - lengthDif;
+                 ++i)
+            {
+                tmpStr[i] = userStr[i];
+            }
+
+            if (curChar != BACKSPACE_KEY) // Если введён печатный символ,
+            {
+                tmpStr[newSize - 2] = curChar; // Добавляем его в строку
+                tmpStr[newSize - 1] = '\0';
+            }
+            free(userStr);
+            userStr = tmpStr;
+            curSize = newSize;
+        }
+        else
+        {
+            printf("Не могу выделить память под обновлённую строку!");
+            break;
+        }
+    }
+
+    return userStr;
+}
+
+float FloatInput(const char message[])
+{
+    float number = 0;
+    printf("%s", message);
+    while (number == 0 || number < 0)
+    {
+        char* InputValue = StringInput();
+        number = strtof(InputValue, NULL);
+        if (number == 0 || number < 0)
+        {
+            printf("Неверный ввод. Попробуйте снова.\n%s", message);
+
+        }
+    }
+    return number;
+}
+
+Node *create_node(Enterprise data) {
+    Node *new_node = malloc(sizeof(Node)); // выделение памяти
     if (new_node == NULL) { // проверка на ошибку
         printf("Memory allocation failed.\n");
         exit(1);
@@ -76,30 +168,15 @@ struct node *create_node(struct product data) {
 }
 
 // Функция для добавления элемента в начало списка
-void add_node(struct node **head, struct product data) {
-    struct node *new_node = create_node(data); // создание нового элемента
+void add_node(Node **head, Enterprise data) {
+    Node *new_node = create_node(data); // создание нового элемента
     new_node->next = *head; // связывание нового элемента с головой списка
     *head = new_node; // обновление головы списка
 }
 
-// Функция для модификации элемента списка по индексу
-void modify_node(struct node* head, int index, struct product new_data) {
-    struct node* current = head; // текущий элемент
-    int count = 0; // счетчик
-    while (current != NULL) { // пока не достигнут конец списка
-        if (count == index) { // если счетчик совпадает с индексом
-            current->data = new_data; // заменить данные текущего элемента на новые
-            return; // завершить функцию
-        }
-        count++; // увеличить счетчик
-        current = current->next; // перейти к следующему элементу
-    }
-    printf("Index out of range.\n"); // сообщить об ошибке
-}
-
 // Функция для изменения значения всех полей элемента списка или только части из них
-void update_node(struct node* head, int index, char* new_company, char* new_type, double new_price, double new_performance) {
-    struct node* current = head; // текущий элемент
+void update_node(Node* head, int index, char* new_company, char* new_type, double new_price, double new_performance) {
+    Node* current = head; // текущий элемент
     int count = 0; // счетчик
     while (current != NULL) { // пока не достигнут конец списка
         if (count == index) { // если счетчик совпадает с индексом
@@ -125,9 +202,9 @@ void update_node(struct node* head, int index, char* new_company, char* new_type
 }
 
 // Функция для удаления элемента списка по индексу
-void delete_node(struct node **head, int index) {
-    struct node *current = *head; // текущий элемент
-    struct node *prev = NULL; // предыдущий элемент
+void delete_node(Node **head, int index) {
+    Node *current = *head; // текущий элемент
+    Node *prev = NULL; // предыдущий элемент
     int count = 0; // счетчик
     while (current != NULL) { // пока не достигнут конец списка
         if (count == index) { // если индекс совпадает с счетчиком
@@ -147,42 +224,43 @@ void delete_node(struct node **head, int index) {
 }
 
 // Функция для чтения элемента списка по индексу
-struct product read_node(struct node* head, int index) {
-    struct node* current = head; // текущий элемент
+void PrintNode(Node* head, int countEnterprises) {
+    const char message[] = "Введите номер предприятия, "
+                           "которое вы хотите вывести: ";
+
+    printf("Всего добавлено %d предприятий.\n", countEnterprises);
+    int index = CheckingInput(message, 1, countEnterprises) - 1;
+
     int count = 0; // счетчик
+    bool flag = false;
+    Node* current = head; // текущий элемент
+
     while (current != NULL) { // пока не достигнут конец списка
         if (count == index) { // если счетчик совпадает с индексом
-            return current->data; // вернуть данные текущего элемента
+            flag = true;
+            break;
         }
         count++; // увеличить счетчик
         current = current->next; // перейти к следующему элементу
     }
-    printf("Index out of range.\n"); // сообщить об ошибке
-    struct product empty; // создать пустую структуру данных
-    empty.company = NULL; // инициализировать поля
-    empty.type = NULL;
-    empty.price = 0.0;
-    empty.performance = 0.0;
-    return empty; // вернуть пустую структуру данных
-}
-
-// Функция для отображения содержимого списка
-void display_list(struct node *head) {
-    struct node *current = head; // текущий элемент
-    while (current != NULL) { // пока не достигнут конец списка
-        printf("Company: %s\n",
-               current->data.company); // вывод данных текущего элемента
-        printf("Type: %s\n", current->data.type);
-        printf("Price: %.2f\n", current->data.price);
-        printf("Performance: %.2f\n", current->data.performance);
+    if (flag)
+    {
         printf("\n");
-        current = current->next; // перейти к следующему элементу
+        printf("Предприятие-изготовитель: %s\n", current->data.company);
+        printf("Тип: %s\n", current->data.type);
+        printf("Цена: %.2f\n", current->data.price);
+        printf("Производительность: %.2f\n", current->data.performance);
+        printf("\n");
+    }
+    else
+    {
+        printf("Индекс за пределами диапазона.\n"); // сообщить об ошибке
     }
 }
 
 // Функция для отображения содержимого всех элементов списка или его части
-void print_list(struct node* head, int start, int end) {
-    struct node* current = head; // текущий элемент
+void print_list(Node* head, int start, int end) {
+    Node* current = head; // текущий элемент
     int count = 0; // счетчик
     while (current != NULL) { // пока не достигнут конец списка
         if (count >= start && count <= end) { // если счетчик входит в заданный диапазон
@@ -201,8 +279,8 @@ void print_list(struct node* head, int start, int end) {
 }
 
 // Функция для нахождения списка предприятий с наилучшим соотношением цена/производительность
-void find_best_ratio(struct node *head) {
-    struct node *current = head; // текущий элемент
+void find_best_ratio(Node *head) {
+    Node *current = head; // текущий элемент
     double best_ratio = 0.0; // лучшее соотношение
     while (current != NULL) { // пока не достигнут конец списка
         double ratio = current->data.price /
@@ -229,8 +307,8 @@ void find_best_ratio(struct node *head) {
 }
 
 // Функция для нахождения диапазона цен
-void find_price_range(struct node *head) {
-    struct node *current = head; // текущий элемент
+void find_price_range(Node *head) {
+    Node *current = head; // текущий элемент
     double min_price = 0.0; // минимальная цена
     double max_price = 0.0; // максимальная цена
     while (current != NULL) { // пока не достигнут конец списка
@@ -250,9 +328,9 @@ void find_price_range(struct node *head) {
 }
 
 // Функция для освобождения памяти списка
-void free_list(struct node **head) {
-    struct node *current = *head; // текущий элемент
-    struct node *next; // следующий элемент
+void free_list(Node **head) {
+    Node *current = *head; // текущий элемент
+    Node *next; // следующий элемент
     while (current != NULL) { // пока список не пуст
         next = current->next; // запомнить следующий элемент
         free(current); // освободить память текущего элемента
