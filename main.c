@@ -14,11 +14,11 @@
 
 // Тестирование программы
 int main() {
-    printf("----------------------------------------------\n");
-    printf("| Программа для работы со структурами данных |\n");
-    printf("----------------------------------------------\n");
+    printf("-----------------------------------------------\n");
+    printf("| Программа для работы с динамической памятью |\n");
+    printf("-----------------------------------------------\n");
 
-    const char firstMessage[] = "Введите номер пункта: ";
+
     int userChoice;
     int countEnterprises = 0;
 
@@ -31,7 +31,8 @@ int main() {
         // нижняя граница допустимых значений
         int lowerBound = 1;
         // получаем номер выбранного пункта меню
-        userChoice = CheckingInput(firstMessage, lowerBound, menuItemsCount);
+        printf("Введите номер пункта: ");
+        userChoice = CheckingInput(lowerBound, menuItemsCount);
         // суммарное количество батареек
 
         switch (userChoice)
@@ -47,10 +48,10 @@ int main() {
                 tmpEnterprise.company = StringInput();
                 printf("Введите тип предприятия: ");
                 tmpEnterprise.type = StringInput();
-                char secondMessage[] = "Введите цену: ";
-                tmpEnterprise.price = FloatInput(secondMessage);
-                char thirdMessage[] = "Введите производительность: ";
-                tmpEnterprise.performance = FloatInput(thirdMessage);
+                printf("Введите цену: ");
+                tmpEnterprise.price = FloatInput();
+                printf("Введите производительность: ");
+                tmpEnterprise.performance = FloatInput();
                 add_node(&enterprises, tmpEnterprise);
                 countEnterprises++;
                 break;
@@ -61,7 +62,7 @@ int main() {
                     printf("Предприятия ещё не добавлены.\n");
                     break;
                 }
-
+                UpdateNode(enterprises, countEnterprises);
                 break;
 
             case DELETING_ENTERPRISE:
@@ -87,7 +88,7 @@ int main() {
                     printf("Предприятия ещё не добавлены.\n");
                     break;
                 }
-
+                print_list(enterprises, 0, 1);
                 break;
 
             case ENTERPRISES_WITH_BEST_VALUE:

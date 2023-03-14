@@ -6,21 +6,21 @@
 //
 #include "structure.h"
 
-
-
 void PrintMenu(void);
 
-int CheckingInput(const char message[], int lowerBound, int count);
+void PrintChangingMenu(void);
+
+int CheckingInput(int lowerBound, int count);
 
 char* StringInput(void);
 
-float FloatInput(const char message[]);
+float FloatInput();
 
 Node *create_node(Enterprise data);
 
 void add_node(Node **head, Enterprise data);
 
-void update_node(Node* head, int index, char* new_company, char* new_type,
+void UpdateNode(Node* head, int index, char* new_company, char* new_type,
                  double new_price, double new_performance);
 
 void delete_node(Node **head, int index);

@@ -26,12 +26,22 @@ void PrintMenu(void)
     printf("8 - Выход\n");
 }
 
-int CheckingInput(const char message[], int lowerBound, int count)
+void PrintChangingMenu(void)
+{
+    printf("--------------\n");
+    printf("| Параметры: |\n");
+    printf("--------------\n");
+    printf("1 - Предприятие-изготовитель\n");
+    printf("2 - Тип\n");
+    printf("3 - Цена\n");
+    printf("4 - Производительность\n");
+}
+
+int CheckingInput(int lowerBound, int count)
 {
     int userInput = 1;
     char inputChar = '\0';
 
-    printf("%s", message);
     int input = scanf("%d%c", &userInput, &inputChar);
 
     if (count)
@@ -44,7 +54,7 @@ int CheckingInput(const char message[], int lowerBound, int count)
                 while ((inputChar = getchar()) != '\n');
             }
             userInput = 1;
-            printf("Неверный ввод. Попробуйте снова.\n%s", message);
+            printf("Неверный ввод. Попробуйте снова.\nВведите номер: ");
             input = scanf("%d%c", &userInput, &inputChar);
         }
     }
@@ -58,7 +68,7 @@ int CheckingInput(const char message[], int lowerBound, int count)
                 while ((inputChar = getchar()) != '\n');
             }
             userInput = 1;
-            printf("Неверный ввод. Попробуйте снова.\n%s", message);
+            printf("Неверный ввод. Попробуйте снова.\nВведите номер: ");
             input = scanf("%d%c", &userInput, &inputChar);
         }
     }
@@ -139,17 +149,16 @@ char* StringInput(void)
     return userStr;
 }
 
-float FloatInput(const char message[])
+float FloatInput()
 {
     float number = 0;
-    printf("%s", message);
     while (number == 0 || number < 0)
     {
         char* InputValue = StringInput();
         number = strtof(InputValue, NULL);
         if (number == 0 || number < 0)
         {
-            printf("Неверный ввод. Попробуйте снова.\n%s", message);
+            printf("Неверный ввод. Попробуйте снова.\nПовторите ввод: ");
 
         }
     }
@@ -174,31 +183,65 @@ void add_node(Node **head, Enterprise data) {
     *head = new_node; // обновление головы списка
 }
 
-// Функция для изменения значения всех полей элемента списка или только части из них
-void update_node(Node* head, int index, char* new_company, char* new_type, double new_price, double new_performance) {
-    Node* current = head; // текущий элемент
+// Функция для изменения значения всех полей элемента списка
+// или только части из них
+void UpdateNode(Node* head, int countEnterprises) {
+    printf("Всего добавлено %d предприятий.\n", countEnterprises);
+    printf("Введите номер предприятия, которое вы хотите изменить: ");
+    int index = CheckingInput(1, countEnterprises) - 1;
     int count = 0; // счетчик
-    while (current != NULL) { // пока не достигнут конец списка
+
+    PrintChangingMenu();
+    printf("Введите номер пункта: ");
+    int userChoice = CheckingInput(1, 4);
+
+    char* newCompany = NULL;
+    char* newType = NULL;
+    float newPrice = 0;
+    float newPerformance = 0;
+
+    if (userChoice == 1)
+    {
+        printf("Введите название предприятия-изготовителя: ");
+        newCompany = StringInput();
+    }
+    if (userChoice == 2)
+    {
+        printf("Введите тип предприятия: ");
+        newType = StringInput();
+    }
+    if (userChoice == 3)
+    {
+        printf("Введите цену: ");
+        newPrice = FloatInput();
+    }
+    if (userChoice == 4)
+    {
+        printf("Введите производительность: ");
+        newPerformance = FloatInput();
+    }
+
+    while (head != NULL) { // пока не достигнут конец списка
         if (count == index) { // если счетчик совпадает с индексом
             // Проверить, задано ли новое значение для каждого поля
-            if (new_company != NULL) { // если задано новое название предприятия
-                current->data.company = new_company; // заменить название предприятия на новое
+            if (newCompany != NULL) { // если задано новое название предприятия
+                head->data.company = newCompany; // заменить название предприятия на новое
             }
-            if (new_type != NULL) { // если задан новый тип продукта
-                current->data.type = new_type; // заменить тип продукта на новый
+            if (newType != NULL) { // если задан новый тип продукта
+                head->data.type = newType; // заменить тип продукта на новый
             }
-            if (new_price >= 0.0) { // если задана новая цена
-                current->data.price = new_price; // заменить цену на новую
+            if (newPrice > 0.0) { // если задана новая цена
+                head->data.price = newPrice; // заменить цену на новую
             }
-            if (new_performance >= 0.0) { // если задана новая производительность
-                current->data.performance = new_performance; // заменить производительность на новую
+            if (newPerformance > 0.0) { // если задана новая производительность
+                head->data.performance = newPerformance; // заменить производительность на новую
             }
             return; // завершить функцию
         }
         count++; // увеличить счетчик
-        current = current->next; // перейти к следующему элементу
+        head = head->next; // перейти к следующему элементу
     }
-    printf("Index out of range.\n"); // сообщить об ошибке
+    printf("Индекс за пределами диапазона.\n"); // сообщить об ошибке
 }
 
 // Функция для удаления элемента списка по индексу
@@ -225,31 +268,30 @@ void delete_node(Node **head, int index) {
 
 // Функция для чтения элемента списка по индексу
 void PrintNode(Node* head, int countEnterprises) {
-    const char message[] = "Введите номер предприятия, "
-                           "которое вы хотите вывести: ";
-
     printf("Всего добавлено %d предприятий.\n", countEnterprises);
-    int index = CheckingInput(message, 1, countEnterprises) - 1;
+
+    printf("Введите номер предприятия: ");
+    int index = CheckingInput(1, countEnterprises) - 1;
 
     int count = 0; // счетчик
     bool flag = false;
-    Node* current = head; // текущий элемент
 
-    while (current != NULL) { // пока не достигнут конец списка
+    while (head != NULL) { // пока не достигнут конец списка
         if (count == index) { // если счетчик совпадает с индексом
             flag = true;
             break;
         }
         count++; // увеличить счетчик
-        current = current->next; // перейти к следующему элементу
+        head = head->next; // перейти к следующему элементу
     }
     if (flag)
     {
         printf("\n");
-        printf("Предприятие-изготовитель: %s\n", current->data.company);
-        printf("Тип: %s\n", current->data.type);
-        printf("Цена: %.2f\n", current->data.price);
-        printf("Производительность: %.2f\n", current->data.performance);
+        printf("Предприятие №%d\n", index + 1);
+        printf("Предприятие-изготовитель: %s\n", head->data.company);
+        printf("Тип: %s\n", head->data.type);
+        printf("Цена: %.2f\n", head->data.price);
+        printf("Производительность: %.2f\n", head->data.performance);
         printf("\n");
     }
     else
