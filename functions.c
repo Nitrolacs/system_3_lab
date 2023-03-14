@@ -345,7 +345,7 @@ void PrintList(Node* head, int countEnterprises) {
 }
 
 // Функция для нахождения списка предприятий с наилучшим соотношением цена/производительность
-void find_best_ratio(Node *head) {
+void FindBestRatio(Node* head) {
     Node *current = head; // текущий элемент
     double best_ratio = 0.0; // лучшее соотношение
     while (current != NULL) { // пока не достигнут конец списка
@@ -357,9 +357,9 @@ void find_best_ratio(Node *head) {
         }
         current = current->next; // перейти к следующему элементу
     }
-    printf("The best price/performance ratio is %.2f\n",
+    printf("Лучшее соотношение цена/качество %.2f\n",
            best_ratio); // вывести лучшее соотношение
-    printf("The companies with this ratio are:\n"); // вывести список предприятий с этим соотношением
+    printf("Предприятия с таким коэффициентом:\n"); // вывести список предприятий с этим соотношением
     current = head; // сбросить текущий элемент
     while (current != NULL) { // пока не достигнут конец списка
         double ratio = current->data.price /

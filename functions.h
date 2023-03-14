@@ -28,7 +28,7 @@ void PrintNode(Node* head, int countEnterprises);
 
 void PrintList(Node* head, int countEnterprises);
 
-void find_best_ratio(Node *head);
+void FindBestRatio(Node* head);
 
 void find_price_range(Node *head);
 

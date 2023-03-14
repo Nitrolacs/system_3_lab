@@ -96,7 +96,7 @@ int main() {
                     printf("Предприятия ещё не добавлены.\n");
                     break;
                 }
-
+                FindBestRatio(enterprises);
                 break;
 
             case PRICE_RANGE:
