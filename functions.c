@@ -1,3 +1,5 @@
+/*! Функции программы */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -149,7 +151,7 @@ char* StringInput(void)
     return userStr;
 }
 
-float FloatInput()
+float FloatInput(void)
 {
     float number = 0;
     while (number == 0 || number < 0)
@@ -159,46 +161,47 @@ float FloatInput()
 
         if (number == 0 || number < 0)
         {
-            printf("Неверный ввод. Попробуйте снова.\nПовторите ввод: ");
+            printf("Неверный ввод. Попробуйте снова.\n"
+                   "Повторите ввод: ");
         }
         free(InputValue);
     }
     return number;
 }
 
-Node* CreateNode(Enterprise data) {
-    Node* newNode = malloc(sizeof(Node)); // выделение памяти
-    if (newNode == NULL) { // проверка на ошибку
+Node* CreateNode(Enterprise data)
+{
+    Node* newNode = malloc(sizeof(Node)); // Выделение памяти
+    if (newNode == NULL)
+    { // Проверка на ошибку
         printf("Не удалось выделить память.\n");
         exit(1);
     }
-    newNode->data = data; // копирование данных
-    newNode->next = NULL; // инициализация указателя
-    return newNode; // возврат нового элемента
+    newNode->data = data; // Копирование данных
+    newNode->next = NULL; // Инициализация указателя
+    return newNode;
 }
 
-// Функция для добавления элемента в конец списка
 void AddNode(Node** head, Enterprise data)
 {
-    Node* newNode = CreateNode(data); // создание нового элемента
-    if (*head == NULL) // если список пустой
+    Node* newNode = CreateNode(data); // Создание нового элемента
+    if (*head == NULL) // Если список пустой
     {
-        *head = newNode; // новый элемент становится головой списка
+        *head = newNode; // Новый элемент становится головой списка
     }
-    else // если список не пустой
+    else // Иначе
     {
-        Node* temp = *head; // создание временного указателя temp и присвоение ему значения головы списка
-        while (temp->next != NULL) // перебор списка до последнего элемента
+        Node* temp = *head; // Создание временного указателя temp
+        while (temp->next != NULL) // Перебор списка до последнего элемента
         {
             temp = temp->next;
         }
-        temp->next = newNode; // связывание последнего элемента с новым элементом
+        temp->next = newNode; // Связывание последнего элемента с новым
     }
 }
 
-// Функция для изменения значения всех полей элемента списка
-// или только части из них
-void UpdateNode(Node* head, int countEnterprises) {
+void UpdateNode(Node* head, int countEnterprises)
+{
     printf("Всего добавлено %d предприятий.\n", countEnterprises);
     printf("Введите номер предприятия, которое вы хотите изменить: ");
     int index = CheckingInput(1, countEnterprises) - 1;
@@ -234,33 +237,39 @@ void UpdateNode(Node* head, int countEnterprises) {
         newPerformance = FloatInput();
     }
 
-    while (head != NULL) { // пока не достигнут конец списка
-        if (count == index) { // если счетчик совпадает с индексом
+    while (head != NULL)
+    { // Пока не достигнут конец списка
+        if (count == index)
+        { // Если счетчик совпадает с индексом
             // Проверить, задано ли новое значение для каждого поля
-            if (newCompany != NULL) { // если задано новое название предприятия
+            if (newCompany != NULL)
+            {
                 free(head->data.company);
-                head->data.company = newCompany; // заменить название предприятия на новое
+                head->data.company = newCompany;
             }
-            if (newType != NULL) { // если задан новый тип продукта
+            if (newType != NULL)
+            {
                 free(head->data.type);
-                head->data.type = newType; // заменить тип продукта на новый
+                head->data.type = newType;
             }
-            if (newPrice > 0.0) { // если задана новая цена
-                head->data.price = newPrice; // заменить цену на новую
+            if (newPrice > 0.0)
+            {
+                head->data.price = newPrice;
             }
-            if (newPerformance > 0.0) { // если задана новая производительность
-                head->data.performance = newPerformance; // заменить производительность на новую
+            if (newPerformance > 0.0)
+            {
+                head->data.performance = newPerformance;
             }
-            return; // завершить функцию
+            return;
         }
-        count++; // увеличить счетчик
-        head = head->next; // перейти к следующему элементу
+        count++;
+        head = head->next;
     }
-    printf("Индекс за пределами диапазона.\n"); // сообщить об ошибке
+    printf("Индекс за пределами диапазона.\n");
 }
 
-// Функция для удаления элемента списка по индексу
-void DeleteNode(Node** head, int* countEnterprises) {
+void DeleteNode(Node** head, int* countEnterprises)
+{
     printf("Всего добавлено %d предприятий.\n", *countEnterprises);
     printf("Введите номер предприятия, которое вы хотите удалить: ");
     int index = CheckingInput(1, *countEnterprises) - 1;
@@ -268,43 +277,51 @@ void DeleteNode(Node** head, int* countEnterprises) {
     Node* current = *head; // текущий элемент
     Node* prev = NULL; // предыдущий элемент
     int count = 0; // счетчик
-    while (current != NULL) { // пока не достигнут конец списка
-        if (count == index) { // если индекс совпадает с счетчиком
-            if (prev == NULL) { // если удаляем голову списка
-                *head = current->next; // обновить голову списка
-            } else { // иначе
-                prev->next = current->next; // обойти удаляемый элемент
+    while (current != NULL)
+    { // Пока не достигнут конец списка
+        if (count == index)
+        { // Если индекс совпадает с счетчиком
+            if (prev == NULL)
+            { // Если удаляем голову списка
+                *head = current->next; // Обновляем голову списка
             }
+            else
+            { // Иначе
+                prev->next = current->next; // Обойти удаляемый элемент
+            }
+            // Освобождаем память
             free(current->data.company);
             free(current->data.type);
-            free(current); // освободить память
+            free(current);
             *countEnterprises = *countEnterprises - 1;
-            return; // завершить функцию
+            return; // Завершаем функцию
         }
-        count++; // увеличить счетчик
-        prev = current; // обновить предыдущий элемент
-        current = current->next; // перейти к следующему элементу
+        count++; // Увеличиваем счётчик
+        prev = current; // Обновляем предыдущий элемент
+        current = current->next; // Переходим к следующему элементу
     }
-    printf("Индекс за пределами диапазона.\n"); // сообщить об ошибке
+    printf("Индекс за пределами диапазона.\n"); // Сообщаем об ошибке
 }
 
-// Функция для чтения элемента списка по индексу
-void PrintNode(Node* head, int countEnterprises) {
+void PrintNode(Node* head, int countEnterprises)
+{
     printf("Всего добавлено %d предприятий.\n", countEnterprises);
 
     printf("Введите номер предприятия: ");
     int index = CheckingInput(1, countEnterprises) - 1;
 
-    int count = 0; // счетчик
+    int count = 0; // Счетчик
     bool flag = false;
 
-    while (head != NULL) { // пока не достигнут конец списка
-        if (count == index) { // если счетчик совпадает с индексом
+    while (head != NULL)
+    { // Пока не достигнут конец списка
+        if (count == index)
+        { // Если счетчик совпадает с индексом
             flag = true;
             break;
         }
-        count++; // увеличить счетчик
-        head = head->next; // перейти к следующему элементу
+        count++; // Увеличиваем счетчик
+        head = head->next; // Переходим к следующему элементу
     }
     if (flag)
     {
@@ -318,12 +335,12 @@ void PrintNode(Node* head, int countEnterprises) {
     }
     else
     {
-        printf("Индекс за пределами диапазона.\n"); // сообщить об ошибке
+        printf("Индекс за пределами диапазона.\n"); // Ошибка
     }
 }
 
-// Функция для отображения содержимого всех элементов списка или его части
-void PrintList(Node* head, int countEnterprises) {
+void PrintList(Node* head, int countEnterprises)
+{
     printf("Всего добавлено %d предприятий.\n", countEnterprises);
 
     printf("Введите начальный номер: ");
@@ -332,9 +349,11 @@ void PrintList(Node* head, int countEnterprises) {
     printf("Введите конечный номер: ");
     int end = CheckingInput(start, countEnterprises) - 1;
 
-    int count = 0; // счетчик
-    while (head != NULL) { // пока не достигнут конец списка
-        if (count >= start && count <= end) { // если счетчик входит в заданный диапазон
+    int count = 0; // Счетчик
+    while (head != NULL)
+    { // Пока не достигнут конец списка
+        if (count >= start && count <= end)
+        {
             // Вывести данные текущего элемента
             printf("\n");
             printf("Предприятие №%d\n", count + 1);
@@ -344,72 +363,76 @@ void PrintList(Node* head, int countEnterprises) {
             printf("Производительность: %.2f\n", head->data.performance);
             printf("\n");
         }
-        count++; // увеличить счетчик
-        head = head->next; // перейти к следующему элементу
+        count++; // Увеличить счетчик
+        head = head->next; // Переходим к следующему элементу
     }
 }
 
-// Функция для нахождения списка предприятий с наилучшим соотношением цена/производительность
-void FindBestRatio(Node* head) {
-    Node *current = head; // текущий элемент
-    double bestRatio = 0.0; // лучшее соотношение
-    while (current != NULL) { // пока не достигнут конец списка
+void FindBestRatio(Node* head)
+{
+    Node* current = head; // Текущий элемент
+    double bestRatio = 0.0; // Лучшее соотношение
+    while (current != NULL) { // Пока не достигнут конец списка
         double ratio = current->data.price /
-                       current->data.performance; // вычислить соотношение для текущего элемента
+                       current->data.performance; // Вычисление соотношения
         if (ratio < bestRatio || bestRatio ==
-                                  0.0) { // если соотношение лучше или еще не определено
-            bestRatio = ratio; // обновить лучшее соотношение
+                                  0.0)
+        { // Если соотношение лучше или еще не определено
+            bestRatio = ratio; // Обновляем лучшее соотношение
         }
-        current = current->next; // перейти к следующему элементу
+        current = current->next; // Переходим к следующему элементу
     }
 
     printf("Лучшее соотношение цена/производительность: %.2f\n",
-           bestRatio); // вывести лучшее соотношение
-    printf("Предприятия с таким коэффициентом:\n"); // вывести список предприятий с этим соотношением
+           bestRatio);
+    printf("Предприятия с таким коэффициентом:\n");
 
-    current = head; // сбросить текущий элемент
-    while (current != NULL) { // пока не достигнут конец списка
+    current = head; // СБрасываем текущий элемент
+    while (current != NULL)
+    { // Пока не достигнут конец списка
         double ratio = current->data.price /
-                       current->data.performance; // вычислить соотношение для текущего элемента
-        if (ratio == bestRatio) { // если соотношение совпадает с лучшим
+                       current->data.performance;
+        if (ratio == bestRatio)
+        { // Если соотношение совпадает с лучшим
             printf("%s\n",
-                   current->data.company); // вывести название предприятия
+                   current->data.company); // Выводим название предприятия
         }
-        current = current->next; // перейти к следующему элементу
+        current = current->next; // Переходим к следующему элементу
     }
 }
 
-// Функция для нахождения диапазона цен
 void FindPriceRange(Node* head) {
-    double minPrice = 0.0; // минимальная цена
-    double maxPrice = 0.0; // максимальная цена
-    while (head != NULL) { // пока не достигнут конец списка
-        double price = head->data.price; // получить цену текущего элемента
+    double minPrice = 0.0; // Минимальная цена
+    double maxPrice = 0.0; // Максимальная цена
+    while (head != NULL)
+    {
+        double price = head->data.price;
         if (price < minPrice ||
-            minPrice == 0.0) { // если цена меньше или еще не определена
-            minPrice = price; // обновить минимальную цену
+            minPrice == 0.0)
+        {
+            minPrice = price;
         }
         if (price > maxPrice ||
-            maxPrice == 0.0) { // если цена больше или еще не определена
-            maxPrice = price; // обновить максимальную цену
+            maxPrice == 0.0)
+        {
+            maxPrice = price;
         }
-        head = head->next; // перейти к следующему элементу
+        head = head->next;
     }
-    printf("Диапазон цен от %.2f до %.2f\n", minPrice,
-           maxPrice); // вывести диапазон цен
+    printf("Диапазон цен от %.2f до %.2f\n", minPrice, maxPrice);
 }
 
-// Функция для освобождения памяти списка
 void FreeList(Node** head) {
-    Node* current = *head; // текущий элемент
-    Node* next; // следующий элемент
+    Node* current = *head;
+    Node* next;
 
-    while (current != NULL) { // пока список не пуст
-        next = current->next; // запомнить следующий элемент
+    while (current != NULL)
+    {
+        next = current->next;
         free(current->data.company);
         free(current->data.type);
-        free(current); // освободить память текущего элемента
-        current = next; // перейти к следующему элементу
+        free(current);
+        current = next;
     }
-    *head = NULL; // обнулить голову списка
+    *head = NULL;
 }

@@ -1,3 +1,5 @@
+/*! Код основного процесса программы */
+
 #include <stdio.h>
 
 #include "structure.h"
@@ -12,8 +14,8 @@
 #define PRICE_RANGE 7
 #define EXIT 8
 
-// Тестирование программы
-int main() {
+int main()
+{
     printf("-----------------------------------------------\n");
     printf("| Программа для работы с динамической памятью |\n");
     printf("-----------------------------------------------\n");
@@ -74,7 +76,8 @@ int main() {
                 break;
 
             case PRINTING_ONE_ENTERPRISE:
-                if (enterprises == NULL) {
+                if (enterprises == NULL)
+                {
                     printf("Предприятия ещё не добавлены.\n");
                     break;
                 }
