@@ -156,11 +156,12 @@ float FloatInput()
     {
         char* InputValue = StringInput();
         number = strtof(InputValue, NULL);
+
         if (number == 0 || number < 0)
         {
             printf("Неверный ввод. Попробуйте снова.\nПовторите ввод: ");
-
         }
+        free(InputValue);
     }
     return number;
 }
@@ -237,9 +238,11 @@ void UpdateNode(Node* head, int countEnterprises) {
         if (count == index) { // если счетчик совпадает с индексом
             // Проверить, задано ли новое значение для каждого поля
             if (newCompany != NULL) { // если задано новое название предприятия
+                free(head->data.company);
                 head->data.company = newCompany; // заменить название предприятия на новое
             }
             if (newType != NULL) { // если задан новый тип продукта
+                free(head->data.type);
                 head->data.type = newType; // заменить тип продукта на новый
             }
             if (newPrice > 0.0) { // если задана новая цена
@@ -272,6 +275,8 @@ void DeleteNode(Node** head, int* countEnterprises) {
             } else { // иначе
                 prev->next = current->next; // обойти удаляемый элемент
             }
+            free(current->data.company);
+            free(current->data.type);
             free(current); // освободить память
             *countEnterprises = *countEnterprises - 1;
             return; // завершить функцию
@@ -395,11 +400,14 @@ void FindPriceRange(Node* head) {
 }
 
 // Функция для освобождения памяти списка
-void FreeList(Node **head) {
-    Node *current = *head; // текущий элемент
-    Node *next; // следующий элемент
+void FreeList(Node** head) {
+    Node* current = *head; // текущий элемент
+    Node* next; // следующий элемент
+
     while (current != NULL) { // пока список не пуст
         next = current->next; // запомнить следующий элемент
+        free(current->data.company);
+        free(current->data.type);
         free(current); // освободить память текущего элемента
         current = next; // перейти к следующему элементу
     }
