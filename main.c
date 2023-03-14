@@ -105,11 +105,11 @@ int main() {
                     printf("Предприятия ещё не добавлены.\n");
                     break;
                 }
-
+                FindPriceRange(enterprises);
                 break;
 
             default:
-                free_list(&enterprises);
+                FreeList(&enterprises);
                 printf("Выход...\n");
         }
     } while (userChoice != EXIT);

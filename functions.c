@@ -347,24 +347,26 @@ void PrintList(Node* head, int countEnterprises) {
 // Функция для нахождения списка предприятий с наилучшим соотношением цена/производительность
 void FindBestRatio(Node* head) {
     Node *current = head; // текущий элемент
-    double best_ratio = 0.0; // лучшее соотношение
+    double bestRatio = 0.0; // лучшее соотношение
     while (current != NULL) { // пока не достигнут конец списка
         double ratio = current->data.price /
                        current->data.performance; // вычислить соотношение для текущего элемента
-        if (ratio < best_ratio || best_ratio ==
+        if (ratio < bestRatio || bestRatio ==
                                   0.0) { // если соотношение лучше или еще не определено
-            best_ratio = ratio; // обновить лучшее соотношение
+            bestRatio = ratio; // обновить лучшее соотношение
         }
         current = current->next; // перейти к следующему элементу
     }
-    printf("Лучшее соотношение цена/качество %.2f\n",
-           best_ratio); // вывести лучшее соотношение
+
+    printf("Лучшее соотношение цена/производительность: %.2f\n",
+           bestRatio); // вывести лучшее соотношение
     printf("Предприятия с таким коэффициентом:\n"); // вывести список предприятий с этим соотношением
+
     current = head; // сбросить текущий элемент
     while (current != NULL) { // пока не достигнут конец списка
         double ratio = current->data.price /
                        current->data.performance; // вычислить соотношение для текущего элемента
-        if (ratio == best_ratio) { // если соотношение совпадает с лучшим
+        if (ratio == bestRatio) { // если соотношение совпадает с лучшим
             printf("%s\n",
                    current->data.company); // вывести название предприятия
         }
@@ -373,28 +375,27 @@ void FindBestRatio(Node* head) {
 }
 
 // Функция для нахождения диапазона цен
-void find_price_range(Node *head) {
-    Node *current = head; // текущий элемент
-    double min_price = 0.0; // минимальная цена
-    double max_price = 0.0; // максимальная цена
-    while (current != NULL) { // пока не достигнут конец списка
-        double price = current->data.price; // получить цену текущего элемента
-        if (price < min_price ||
-            min_price == 0.0) { // если цена меньше или еще не определена
-            min_price = price; // обновить минимальную цену
+void FindPriceRange(Node* head) {
+    double minPrice = 0.0; // минимальная цена
+    double maxPrice = 0.0; // максимальная цена
+    while (head != NULL) { // пока не достигнут конец списка
+        double price = head->data.price; // получить цену текущего элемента
+        if (price < minPrice ||
+            minPrice == 0.0) { // если цена меньше или еще не определена
+            minPrice = price; // обновить минимальную цену
         }
-        if (price > max_price ||
-            max_price == 0.0) { // если цена больше или еще не определена
-            max_price = price; // обновить максимальную цену
+        if (price > maxPrice ||
+            maxPrice == 0.0) { // если цена больше или еще не определена
+            maxPrice = price; // обновить максимальную цену
         }
-        current = current->next; // перейти к следующему элементу
+        head = head->next; // перейти к следующему элементу
     }
-    printf("The price range is from %.2f to %.2f\n", min_price,
-           max_price); // вывести диапазон цен
+    printf("Диапазон цен от %.2f до %.2f\n", minPrice,
+           maxPrice); // вывести диапазон цен
 }
 
 // Функция для освобождения памяти списка
-void free_list(Node **head) {
+void FreeList(Node **head) {
     Node *current = *head; // текущий элемент
     Node *next; // следующий элемент
     while (current != NULL) { // пока список не пуст

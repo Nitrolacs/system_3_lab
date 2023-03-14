@@ -30,8 +30,8 @@ void PrintList(Node* head, int countEnterprises);
 
 void FindBestRatio(Node* head);
 
-void find_price_range(Node *head);
+void FindPriceRange(Node *head);
 
-void free_list(Node **head);
+void FreeList(Node **head);
 
 #endif //SF_VM_EXCHANGE_FUNCTIONS_H
