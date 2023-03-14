@@ -165,22 +165,34 @@ float FloatInput()
     return number;
 }
 
-Node *create_node(Enterprise data) {
-    Node *new_node = malloc(sizeof(Node)); // выделение памяти
-    if (new_node == NULL) { // проверка на ошибку
-        printf("Memory allocation failed.\n");
+Node* CreateNode(Enterprise data) {
+    Node* newNode = malloc(sizeof(Node)); // выделение памяти
+    if (newNode == NULL) { // проверка на ошибку
+        printf("Не удалось выделить память.\n");
         exit(1);
     }
-    new_node->data = data; // копирование данных
-    new_node->next = NULL; // инициализация указателя
-    return new_node; // возврат нового элемента
+    newNode->data = data; // копирование данных
+    newNode->next = NULL; // инициализация указателя
+    return newNode; // возврат нового элемента
 }
 
-// Функция для добавления элемента в начало списка
-void add_node(Node **head, Enterprise data) {
-    Node *new_node = create_node(data); // создание нового элемента
-    new_node->next = *head; // связывание нового элемента с головой списка
-    *head = new_node; // обновление головы списка
+// Функция для добавления элемента в конец списка
+void AddNode(Node** head, Enterprise data)
+{
+    Node* newNode = CreateNode(data); // создание нового элемента
+    if (*head == NULL) // если список пустой
+    {
+        *head = newNode; // новый элемент становится головой списка
+    }
+    else // если список не пустой
+    {
+        Node* temp = *head; // создание временного указателя temp и присвоение ему значения головы списка
+        while (temp->next != NULL) // перебор списка до последнего элемента
+        {
+            temp = temp->next;
+        }
+        temp->next = newNode; // связывание последнего элемента с новым элементом
+    }
 }
 
 // Функция для изменения значения всех полей элемента списка
@@ -202,22 +214,22 @@ void UpdateNode(Node* head, int countEnterprises) {
 
     if (userChoice == 1)
     {
-        printf("Введите название предприятия-изготовителя: ");
+        printf("Введите новое название предприятия-изготовителя: ");
         newCompany = StringInput();
     }
     if (userChoice == 2)
     {
-        printf("Введите тип предприятия: ");
+        printf("Введите новый тип предприятия: ");
         newType = StringInput();
     }
     if (userChoice == 3)
     {
-        printf("Введите цену: ");
+        printf("Введите новую цену: ");
         newPrice = FloatInput();
     }
     if (userChoice == 4)
     {
-        printf("Введите производительность: ");
+        printf("Введите новую производительность: ");
         newPerformance = FloatInput();
     }
 
@@ -245,9 +257,13 @@ void UpdateNode(Node* head, int countEnterprises) {
 }
 
 // Функция для удаления элемента списка по индексу
-void delete_node(Node **head, int index) {
-    Node *current = *head; // текущий элемент
-    Node *prev = NULL; // предыдущий элемент
+void DeleteNode(Node** head, int* countEnterprises) {
+    printf("Всего добавлено %d предприятий.\n", *countEnterprises);
+    printf("Введите номер предприятия, которое вы хотите удалить: ");
+    int index = CheckingInput(1, *countEnterprises) - 1;
+
+    Node* current = *head; // текущий элемент
+    Node* prev = NULL; // предыдущий элемент
     int count = 0; // счетчик
     while (current != NULL) { // пока не достигнут конец списка
         if (count == index) { // если индекс совпадает с счетчиком
@@ -257,13 +273,14 @@ void delete_node(Node **head, int index) {
                 prev->next = current->next; // обойти удаляемый элемент
             }
             free(current); // освободить память
+            *countEnterprises = *countEnterprises - 1;
             return; // завершить функцию
         }
         count++; // увеличить счетчик
         prev = current; // обновить предыдущий элемент
         current = current->next; // перейти к следующему элементу
     }
-    printf("Index out of range.\n"); // сообщить об ошибке
+    printf("Индекс за пределами диапазона.\n"); // сообщить об ошибке
 }
 
 // Функция для чтения элемента списка по индексу
@@ -301,22 +318,29 @@ void PrintNode(Node* head, int countEnterprises) {
 }
 
 // Функция для отображения содержимого всех элементов списка или его части
-void print_list(Node* head, int start, int end) {
-    Node* current = head; // текущий элемент
+void PrintList(Node* head, int countEnterprises) {
+    printf("Всего добавлено %d предприятий.\n", countEnterprises);
+
+    printf("Введите начальный номер: ");
+    int start = CheckingInput(1, countEnterprises) - 1;
+
+    printf("Введите конечный номер: ");
+    int end = CheckingInput(start, countEnterprises) - 1;
+
     int count = 0; // счетчик
-    while (current != NULL) { // пока не достигнут конец списка
+    while (head != NULL) { // пока не достигнут конец списка
         if (count >= start && count <= end) { // если счетчик входит в заданный диапазон
             // Вывести данные текущего элемента
-            printf("Company: %s\n", current->data.company);
-            printf("Type: %s\n", current->data.type);
-            printf("Price: %.2f\n", current->data.price);
-            printf("Performance: %.2f\n\n", current->data.performance);
+            printf("\n");
+            printf("Предприятие №%d\n", count + 1);
+            printf("Предприятие-изготовитель: %s\n", head->data.company);
+            printf("Тип: %s\n", head->data.type);
+            printf("Цена: %.2f\n", head->data.price);
+            printf("Производительность: %.2f\n", head->data.performance);
+            printf("\n");
         }
         count++; // увеличить счетчик
-        current = current->next; // перейти к следующему элементу
-    }
-    if (start < 0 || end >= count) { // если диапазон выходит за границы списка
-        printf("Invalid range.\n"); // сообщить об ошибке
+        head = head->next; // перейти к следующему элементу
     }
 }
 

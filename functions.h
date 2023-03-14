@@ -16,18 +16,17 @@ char* StringInput(void);
 
 float FloatInput();
 
-Node *create_node(Enterprise data);
+Node *CreateNode(Enterprise data);
 
-void add_node(Node **head, Enterprise data);
+void AddNode(Node **head, Enterprise data);
 
-void UpdateNode(Node* head, int index, char* new_company, char* new_type,
-                 double new_price, double new_performance);
+void UpdateNode(Node* head, int countEnterprises);
 
-void delete_node(Node **head, int index);
+void DeleteNode(Node **head, int* countEnterprises);
 
-Enterprise PrintNode(Node* head, int index);
+void PrintNode(Node* head, int countEnterprises);
 
-void print_list(Node* head, int start, int end);
+void PrintList(Node* head, int countEnterprises);
 
 void find_best_ratio(Node *head);
 

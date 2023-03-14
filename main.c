@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "structure.h"
-#include "functions.c"
+#include "functions.h"
 
 #define ADDING_ENTERPRISE 1
 #define CHANGING_ENTERPRISE 2
@@ -33,7 +33,6 @@ int main() {
         // получаем номер выбранного пункта меню
         printf("Введите номер пункта: ");
         userChoice = CheckingInput(lowerBound, menuItemsCount);
-        // суммарное количество батареек
 
         switch (userChoice)
         {
@@ -52,7 +51,7 @@ int main() {
                 tmpEnterprise.price = FloatInput();
                 printf("Введите производительность: ");
                 tmpEnterprise.performance = FloatInput();
-                add_node(&enterprises, tmpEnterprise);
+                AddNode(&enterprises, tmpEnterprise);
                 countEnterprises++;
                 break;
 
@@ -71,7 +70,7 @@ int main() {
                     printf("Предприятия ещё не добавлены.\n");
                     break;
                 }
-                //DeletingBattery(&batteries, &countBatteries, mode);
+                DeleteNode(&enterprises, &countEnterprises);
                 break;
 
             case PRINTING_ONE_ENTERPRISE:
@@ -88,7 +87,7 @@ int main() {
                     printf("Предприятия ещё не добавлены.\n");
                     break;
                 }
-                print_list(enterprises, 0, 1);
+                PrintList(enterprises, countEnterprises);
                 break;
 
             case ENTERPRISES_WITH_BEST_VALUE:
